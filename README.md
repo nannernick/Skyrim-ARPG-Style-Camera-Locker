@@ -7,11 +7,11 @@ Tested on Skyrim **1.7.104**. Every `.dll` mod needs a build for your game versi
 
 1. **Base:** [SKSE](https://skse.silverlock.org/), [Address Library](https://www.nexusmods.com/skyrimspecialedition/mods/32444), [SkyUI](https://www.nexusmods.com/skyrimspecialedition/mods/12604), [MCM Helper](https://www.nexusmods.com/skyrimspecialedition/mods/53000), Pandora Behaviour Engine
 2. **Camera:** [3PCO](https://www.nexusmods.com/skyrimspecialedition/mods/18515), [True Directional Movement](https://www.nexusmods.com/skyrimspecialedition/mods/51614), [Some Collision Camera](https://www.nexusmods.com/skyrimspecialedition/mods/57864), [Motion Sensitive Fix](https://www.nexusmods.com/skyrimspecialedition/mods/35833), then this plugin ([**Releases**](https://github.com/nannernick/Skyrim-aRPG-Style-Camera-Lock/releases/latest))
-3. **Combat:** [Precision](https://www.nexusmods.com/skyrimspecialedition/mods/72347), [TK Dodge RE](https://www.nexusmods.com/skyrimspecialedition/mods/56956)
+3. **Combat:** [Precision](https://www.nexusmods.com/skyrimspecialedition/mods/72347)
 4. **Skills and spells:** Ordinator, Apocalypse, [Summermyst](https://www.nexusmods.com/skyrimspecialedition/mods/6285)
 5. **Packs:** Genesis
-6. **Loot:** [DiabloRim](https://www.nexusmods.com/skyrimspecialedition/mods/190634), [Loot Spillage NG](https://www.nexusmods.com/skyrimspecialedition/mods/108394), Grid Inventory, [Socketing](https://www.nexusmods.com/skyrimspecialedition/mods/195740)
-7. **Run Pandora** (TDM, TK Dodge, Precision) and launch through SKSE.
+6. **Loot:** [DiabloRim](https://www.nexusmods.com/skyrimspecialedition/mods/190634), QuickLoot LE, Grid Inventory, [Socketing](https://www.nexusmods.com/skyrimspecialedition/mods/195740)
+7. **Run Pandora** (TDM, Precision) and launch through SKSE.
 8. **Set up 3PCO and TDM** with the [Isometric Scrolls Skyrim guide](https://www.nexusmods.com/skyrimspecialedition/mods/89358) (outdated, written for 1.6.640). In TDM, turn off *Reset Camera with Target Lock Button*.
 9. **Tweaks:** difficulty Novice/Apprentice for faster kills; console `player.setav speedmult 130` for faster movement.
 
