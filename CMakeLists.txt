@@ -13,6 +13,8 @@ set(ENABLE_SKYRIM_AE ON CACHE BOOL "" FORCE)
 set(ENABLE_SKYRIM_VR OFF CACHE BOOL "" FORCE)
 set(BUILD_TESTS OFF CACHE BOOL "" FORCE)
 add_subdirectory(extern/CommonLibSSE-NG CommonLibSSE EXCLUDE_FROM_ALL)
+# The library only loads its plugin helper on the prebuilt path, so load it here for source builds.
+include(extern/CommonLibSSE-NG/cmake/CommonLibSSE.cmake)
 
 # add_commonlibsse_plugin comes from CommonLibSSE-NG's CMake. It creates the DLL target
 # and generates the SKSE plugin version data (name, author, address-library flag).
