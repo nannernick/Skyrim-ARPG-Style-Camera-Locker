@@ -1,25 +1,31 @@
-# Skyrim ARPG Style Camera Locker Patch
+# Skyrim ARPG Style Camera Locker + Install Guide
 
-SKSE plugin that pins Skyrim's third-person camera to a fixed angle for isometric/ARPG play. Stops mouse drift and the camera resetting after doors.
+SKSE plugin that pins Skyrim's third-person camera to a fixed angle for isometric/ARPG play, plus the mod list to turn Skyrim into a Path of Exile/Diablo-style ARPG.
 
-**Requires:** SKSE and [Address Library](https://www.nexusmods.com/skyrimspecialedition/mods/32444) for your game version.
+## Install guide
+Tested on Skyrim **1.7.104**. Every `.dll` mod needs a build for your game version; ESP-only mods work on any.
 
-**Made for ARPG-style setups**, specifically:
-- 3PCO – 3rd Person Camera Overhaul: https://www.nexusmods.com/skyrimspecialedition/mods/18515
-- True Directional Movement: https://www.nexusmods.com/skyrimspecialedition/mods/51614
-- The Isometric Scrolls Skyrim guide, for their settings (outdated, written for 1.6.640): https://www.nexusmods.com/skyrimspecialedition/mods/89358
+1. **Base:** [SKSE](https://skse.silverlock.org/), [Address Library](https://www.nexusmods.com/skyrimspecialedition/mods/32444), [SkyUI](https://www.nexusmods.com/skyrimspecialedition/mods/12604), [MCM Helper](https://www.nexusmods.com/skyrimspecialedition/mods/53000), Pandora Behaviour Engine
+2. **Camera:** [3PCO](https://www.nexusmods.com/skyrimspecialedition/mods/18515), [True Directional Movement](https://www.nexusmods.com/skyrimspecialedition/mods/51614), [Some Collision Camera](https://www.nexusmods.com/skyrimspecialedition/mods/57864), [Motion Sensitive Fix](https://www.nexusmods.com/skyrimspecialedition/mods/35833), then this plugin ([**Releases**](https://github.com/nannernick/Skyrim-aRPG-Style-Camera-Lock/releases/latest))
+3. **Combat:** [Precision](https://www.nexusmods.com/skyrimspecialedition/mods/72347), [TK Dodge RE](https://www.nexusmods.com/skyrimspecialedition/mods/56956)
+4. **Skills and spells:** Ordinator, Apocalypse, [Summermyst](https://www.nexusmods.com/skyrimspecialedition/mods/6285)
+5. **Packs:** Genesis
+6. **Loot:** [DiabloRim](https://www.nexusmods.com/skyrimspecialedition/mods/190634), [Loot Spillage NG](https://www.nexusmods.com/skyrimspecialedition/mods/108394), Grid Inventory, [Socketing](https://www.nexusmods.com/skyrimspecialedition/mods/195740)
+7. **Run Pandora** (TDM, TK Dodge, Precision) and launch through SKSE.
+8. **Set up 3PCO and TDM** with the [Isometric Scrolls Skyrim guide](https://www.nexusmods.com/skyrimspecialedition/mods/89358) (outdated, written for 1.6.640). In TDM, turn off *Reset Camera with Target Lock Button*.
+9. **Tweaks:** difficulty Novice/Apprentice for faster kills; console `player.setav speedmult 130` for faster movement.
 
-## Install
-Download the latest release from [**Releases**](https://github.com/nannernick/Skyrim-aRPG-Style-Camera-Lock/releases/latest), drag the zip into Vortex/MO2, and launch through SKSE. **F10** toggles the lock, **F9** hides ceilings indoors.
+If the game crashes on load, check `My Games\Skyrim Special Edition\SKSE\skse64.log` for a plugin that failed to load.
 
-## Settings (`IsoCamLock.ini`)
-- `fYaw`: compass direction in degrees (default 45)
-- `fPitch`: degrees looking down (default 55)
+## Camera Locker
+**F10** toggles the lock, **F9** hides ceilings indoors.
+
+**Settings (`IsoCamLock.ini`)**
+- `fPitch`: degrees looking down (default 30)
 - `bLockYaw` / `bLockPitch`: lock each axis (yaw is free by default)
-- `iCeilingKey` / `fCeilingClearance`: ceiling toggle key (0x43 = F9) and how high above your feet counts as ceiling (default 200). Doesn't work in caves whose floor and ceiling are one mesh.
-- `iPitchMode`: try 1 if pitch won't hold
-- `bInvertPitch`: set 1 if the camera faces the sky
-- `iToggleKey`: scan code, 0x44 = F10
+- `fYaw`: compass direction in degrees, if yaw is locked (default 45)
+- `fCeilingClearance`: how high above your feet counts as ceiling (default 200). Doesn't work in caves whose floor and ceiling are one mesh.
+- `iToggleKey` / `iCeilingKey`: scan codes, 0x44 = F10, 0x43 = F9
 - `bDebugLog`: log camera values to `My Games\Skyrim Special Edition\SKSE\IsoCamLock.log`
 
 ## Angles from other ARPGs
