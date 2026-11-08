@@ -33,7 +33,7 @@ Hover a value to see the math.
 | Path of Exile 2 | [30](#angles-from-other-arpgs "Ground ring ~700 × 350 px → arcsin(350 ÷ 700) = 30°") |
 | Diablo IV | [—](#angles-from-other-arpgs "Not measured yet") |
 
-<details><summary>How Path of Exile was measured</summary>
+<details><summary>How Each Game was measured</summary>
 
 ![Path of Exile ring measured at 1920×1080](images/poe1-measurement.jpg)
 
