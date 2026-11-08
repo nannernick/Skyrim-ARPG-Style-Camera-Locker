@@ -31,7 +31,7 @@ struct Settings
 	bool         invertPitch = false;   // flip sign if the camera looks up instead of down
 	std::uint32_t toggleKey = 0x44;     // DirectInput scan code, default F10
 	bool         debugLog = false;      // log camera values once per second
-	bool         pauseOnTargetLock = true;  // let TDM hold the camera while target lock is active
+	bool         pauseOnTargetLock = false;  // let TDM hold the camera while target lock is active
 	std::uint32_t ceilingKey = 0x43;    // DirectInput scan code, default F9
 	float        ceilingClearance = 200.0f;  // hide objects whose lowest point is this far above the player's feet
 	bool         ceilingsHiddenAtStart = false;
@@ -154,6 +154,9 @@ static void ApplyLock(RE::ThirdPersonState* a_state)
 			a_state->freeRotation.y = pitch;
 		} else {
 			player->data.angle.x = pitch;
+			// TDM's target lock adds its own camera tilt here (seen hitting -60 deg, which points the
+			// camera at the ground). Camera tilt = player pitch - freeRotation.y, so keep it at zero.
+			a_state->freeRotation.y = 0.0f;
 		}
 	}
 }

@@ -16,7 +16,6 @@ Download the latest release from [**Releases**](https://github.com/nannernick/Sk
 - `fYaw`: compass direction in degrees (default 45)
 - `fPitch`: degrees looking down (default 55)
 - `bLockYaw` / `bLockPitch`: lock each axis (yaw is free by default)
-- `bPauseOnTargetLock`: let TDM hold the camera while locked on (default 1)
 - `iCeilingKey` / `fCeilingClearance`: ceiling toggle key (0x43 = F9) and how high above your feet counts as ceiling (default 200). Doesn't work in caves whose floor and ceiling are one mesh.
 - `iPitchMode`: try 1 if pitch won't hold
 - `bInvertPitch`: set 1 if the camera faces the sky
@@ -33,11 +32,7 @@ Hover a value to see the math.
 | Path of Exile 2 | [30](#angles-from-other-arpgs "Ground ring ~700 × 350 px → arcsin(350 ÷ 700) = 30°") |
 | Diablo IV | [—](#angles-from-other-arpgs "Not measured yet") |
 
-<details><summary>How Each Game was measured</summary>
-
 ![Path of Exile ring measured at 1920×1080](images/poe1-measurement.jpg)
-
-</details>
 
 `fPitch = arcsin(height ÷ width)`
 
