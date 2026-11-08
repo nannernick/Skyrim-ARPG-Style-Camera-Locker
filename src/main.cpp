@@ -4,8 +4,6 @@
 #include "RE/Skyrim.h"
 #include "SKSE/SKSE.h"
 
-#include <spdlog/sinks/basic_file_sink.h>
-
 #include <algorithm>
 #include <cctype>
 #include <chrono>
@@ -203,7 +201,7 @@ public:
 			}
 			if (button->GetIDCode() == g_settings.toggleKey) {
 				g_active = !g_active;
-				RE::DebugNotification(g_active ? "IsoCamLock: ON" : "IsoCamLock: OFF");
+				RE::SendHUDMessage::ShowHUDMessage(g_active ? "IsoCamLock: ON" : "IsoCamLock: OFF");
 				logger::info("Toggled {}", g_active ? "on" : "off");
 			}
 		}
@@ -215,31 +213,15 @@ static void OnMessage(SKSE::MessagingInterface::Message* a_msg)
 {
 	if (a_msg->type == SKSE::MessagingInterface::kInputLoaded) {
 		if (auto* input = RE::BSInputDeviceManager::GetSingleton()) {
-			input->AddEventSink(InputSink::GetSingleton());
+			input->AddEventSink(static_cast<RE::BSTEventSink<RE::InputEvent*>*>(InputSink::GetSingleton()));
 			logger::info("Input sink registered");
 		}
 	}
 }
 
-static void SetupLog()
-{
-	auto dir = logger::log_directory();
-	if (!dir) {
-		return;
-	}
-	*dir /= "IsoCamLock.log";
-	auto sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(dir->string(), true);
-	auto log = std::make_shared<spdlog::logger>("global", std::move(sink));
-	log->set_level(spdlog::level::info);
-	log->flush_on(spdlog::level::info);
-	spdlog::set_default_logger(std::move(log));
-	spdlog::set_pattern("[%H:%M:%S] [%l] %v");
-}
-
 SKSEPluginLoad(const SKSE::LoadInterface* a_skse)
 {
-	SKSE::Init(a_skse);
-	SetupLog();
+	SKSE::Init(a_skse);  // also creates My Games\Skyrim Special Edition\SKSE\IsoCamLock.log
 	logger::info("IsoCamLock loading");
 
 	LoadSettings();
