@@ -10,7 +10,7 @@ SKSE plugin that pins Skyrim's third-person camera to a fixed angle for isometri
 - The Isometric Scrolls Skyrim guide, for their settings (outdated, written for 1.6.640): https://www.nexusmods.com/skyrimspecialedition/mods/89358
 
 ## Install
-Download the latest release from [**Releases**](https://github.com/nannernick/Skyrim-aRPG-Style-Camera-Lock/releases/latest), drag the zip into Vortex/MO2, and launch through SKSE. **F10** toggles the lock.
+Download the latest release from [**Releases**](https://github.com/nannernick/Skyrim-aRPG-Style-Camera-Lock/releases/latest), drag the zip into Vortex/MO2, Deploy, and launch through SKSE. **F10** toggles the lock.
 
 ## Settings (`IsoCamLock.ini`)
 - `fYaw`: compass direction in degrees (default 45)
