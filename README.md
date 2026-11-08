@@ -35,7 +35,7 @@ Hover a value to see the math.
 
 <details><summary>How Each Game was measured</summary>
 
-![Path of Exile ring measured at 1920×1080](images/poe1-measurement.jpg)
+[Path of Exile ring measured at 1920×1080](images/poe1-measurement.jpg)
 
 </details>
 
