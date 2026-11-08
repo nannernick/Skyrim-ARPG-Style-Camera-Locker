@@ -1,0 +1,26 @@
+name: Build IsoCamLock
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get CommonLibSSE-NG
+        run: git clone --recursive --depth 1 https://github.com/alandtse/CommonLibSSE-NG extern/CommonLibSSE-NG
+
+      - name: Configure
+        run: cmake -B build -S . -G "Visual Studio 17 2022" -A x64 -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static-md
+
+      - name: Build
+        run: cmake --build build --config Release
+
+      - name: Upload mod
+        uses: actions/upload-artifact@v4
+        with:
+          name: IsoCamLock-mod
+          path: dist/
