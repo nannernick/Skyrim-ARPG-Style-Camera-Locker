@@ -7,14 +7,31 @@ on:
 jobs:
   build:
     runs-on: windows-2022
+    env:
+      VCPKG_BINARY_SOURCES: "clear;files,${{ github.workspace }}/vcpkg_binary_cache,readwrite"
+      VCPKG_FORCE_SYSTEM_BINARIES: "1"
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Get CommonLibSSE-NG
-        run: git clone --recursive --depth 1 https://github.com/alandtse/CommonLibSSE-NG extern/CommonLibSSE-NG
+      - name: Get CommonLibSSE-NG (pinned release)
+        run: git clone --recursive --depth 1 --branch v15.7.3 https://github.com/alandtse/CommonLibSSE-NG extern/CommonLibSSE-NG
+
+      - name: Cache vcpkg packages
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/vcpkg_binary_cache
+          key: vcpkg-${{ hashFiles('vcpkg.json') }}
+          restore-keys: vcpkg-
+
+      - name: Setup vcpkg (pinned to vcpkg.json baseline)
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgJsonGlob: 'vcpkg.json'
+          runVcpkgInstall: false
 
       - name: Configure
-        run: cmake -B build -S . -G "Visual Studio 17 2022" -A x64 -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static-md
+        run: cmake -B build -S . -G "Visual Studio 17 2022" -A x64 -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static-md
 
       - name: Build
         run: cmake --build build --config Release
