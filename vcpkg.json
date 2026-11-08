@@ -2,12 +2,16 @@
   "name": "isocamlock",
   "version-string": "1.0.0",
   "description": "Pins Skyrim's third-person camera to a fixed world yaw and pitch.",
+  "builtin-baseline": "ee12231b20c95013c6638d845d04c91559a1d1ff",
   "dependencies": [
-    "fmt",
-    "spdlog",
-    "rapidcsv",
-    "xbyak",
     "directxmath",
-    "directxtk"
+    "directxtk",
+    "fmt",
+    "nlohmann-json",
+    "rapidcsv",
+    "simpleini",
+    "spdlog",
+    "toml11",
+    "xbyak"
   ]
 }
