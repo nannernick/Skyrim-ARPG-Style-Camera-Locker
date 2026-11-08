@@ -1,4 +1,4 @@
-# Skyrim ARPG Style Camera Locker
+# Skyrim ARPG Style Camera Locker Patch
 
 SKSE plugin that pins Skyrim's third-person camera to a fixed angle for isometric/ARPG play. Stops mouse drift and the camera resetting after doors.
 
@@ -10,12 +10,14 @@ SKSE plugin that pins Skyrim's third-person camera to a fixed angle for isometri
 - The Isometric Scrolls Skyrim guide, for their settings (outdated, written for 1.6.640): https://www.nexusmods.com/skyrimspecialedition/mods/89358
 
 ## Install
-Download the latest release from [**Releases**](https://github.com/nannernick/Skyrim-aRPG-Style-Camera-Lock/releases/latest), drag the zip into Vortex/MO2, and launch through SKSE. **F10** toggles the lock.
+Download the latest release from [**Releases**](https://github.com/nannernick/Skyrim-aRPG-Style-Camera-Lock/releases/latest), drag the zip into Vortex/MO2, and launch through SKSE. **F10** toggles the lock, **F9** hides ceilings indoors.
 
 ## Settings (`IsoCamLock.ini`)
 - `fYaw`: compass direction in degrees (default 45)
 - `fPitch`: degrees looking down (default 55)
-- `bLockYaw` / `bLockPitch`: lock each axis (set 0 to free it)
+- `bLockYaw` / `bLockPitch`: lock each axis (yaw is free by default)
+- `bPauseOnTargetLock`: let TDM hold the camera while locked on (default 1)
+- `iCeilingKey` / `fCeilingClearance`: ceiling toggle key (0x43 = F9) and how high above your feet counts as ceiling (default 200). Doesn't work in caves whose floor and ceiling are one mesh.
 - `iPitchMode`: try 1 if pitch won't hold
 - `bInvertPitch`: set 1 if the camera faces the sky
 - `iToggleKey`: scan code, 0x44 = F10
@@ -27,7 +29,7 @@ Hover a value to see the math.
 | Game | `fPitch` |
 |---|---|
 | Diablo II | [30](#angles-from-other-arpgs "2:1 floor tiles → arcsin(1 ÷ 2) = 30°") |
-| Path of Exile | [—](#angles-from-other-arpgs "Not measured yet") |
+| Path of Exile | [55](#angles-from-other-arpgs "At 1920×1080: ground ring 424 × 349 px → arcsin(349 ÷ 424) = 55.4°") |
 | Path of Exile 2 | [—](#angles-from-other-arpgs "Not measured yet") |
 | Diablo IV | [—](#angles-from-other-arpgs "Not measured yet") |
 
