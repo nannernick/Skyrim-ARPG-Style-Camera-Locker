@@ -29,11 +29,19 @@ Hover a value to see the math.
 | Game | `fPitch` |
 |---|---|
 | Diablo II | [30](#angles-from-other-arpgs "2:1 floor tiles → arcsin(1 ÷ 2) = 30°") |
-| Path of Exile | [55](#angles-from-other-arpgs "At 1920×1080: ground ring 424 × 349 px → arcsin(349 ÷ 424) = 55.4°") |
-| Path of Exile 2 | [—](#angles-from-other-arpgs "Not measured yet") |
+| Path of Exile | [50](#angles-from-other-arpgs "At 1920×1080: ring radii 210 × 160 px → arcsin(160 ÷ 210) = 49.6°") |
+| Path of Exile 2 | [30](#angles-from-other-arpgs "Ground ring ~700 × 350 px → arcsin(350 ÷ 700) = 30°") |
 | Diablo IV | [—](#angles-from-other-arpgs "Not measured yet") |
 
-To measure any game: screenshot a circle on the ground (an AoE ring) near the center of the screen. `fPitch` = arcsin(height ÷ width). Also lower 3PCO's FOV (~40–55) and raise zoom, since ARPGs use a narrow lens from far away.
+<details><summary>How Path of Exile was measured</summary>
+
+![Path of Exile ring measured at 1920×1080](images/poe1-measurement.jpg)
+
+</details>
+
+`fPitch = arcsin(height ÷ width)`
+
+To measure any game: screenshot a circle on the ground (an AoE ring) near the center of the screen and measure its width and height. Also lower 3PCO's FOV (~40–55) and raise zoom, since ARPGs use a narrow lens from far away.
 
 Lock on with TDM before using magic or bows.
 
