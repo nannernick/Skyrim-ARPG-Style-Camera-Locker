@@ -2,7 +2,12 @@
 
 SKSE plugin that pins Skyrim's third-person camera to a fixed angle for isometric/ARPG play. Stops mouse drift and the camera resetting after doors.
 
-**Requires:** SKSE and Address Library for your game version. Don't combine it with the TISS 3PCO camera-lock scripts.
+**Requires:** SKSE and [Address Library](https://www.nexusmods.com/skyrimspecialedition/mods/32444) for your game version.
+
+**Made for ARPG-style setups**, specifically:
+- 3PCO – 3rd Person Camera Overhaul: https://www.nexusmods.com/skyrimspecialedition/mods/18515
+- True Directional Movement: https://www.nexusmods.com/skyrimspecialedition/mods/51614
+- The Isometric Scrolls Skyrim guide, for their settings (outdated, written for 1.6.640): https://www.nexusmods.com/skyrimspecialedition/mods/89358
 
 ## Install
 Download **IsoCamLock-mod** from the latest green run in **Actions**, drag it into Vortex/MO2, and launch through SKSE. **F10** toggles the lock.
