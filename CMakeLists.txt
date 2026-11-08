@@ -27,7 +27,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
 
 # CommonLib's headers expect its precompiled header to be loaded first in every source file,
 # including the version-info file the helper above generates.
-target_precompile_headers(${PROJECT_NAME} PRIVATE <SKSE/SKSE.h> <RE/Skyrim.h>)
+target_precompile_headers(${PROJECT_NAME} PRIVATE src/PCH.h)
 
 # Copy the built DLL into a ready-to-zip mod folder after each build.
 set(DIST_DIR "${CMAKE_SOURCE_DIR}/dist/SKSE/Plugins")
