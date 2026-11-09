@@ -562,7 +562,11 @@ namespace Occlusion
 				const bool liftedAway = g_autoLift && liftTarget >= Settings::LiftMax - 1.0f && g_lift >= Settings::LiftMax - 1.0f;
 				const bool off = (g_cellOverride && g_cellOverride->off) || liftedAway;
 				if (camNode && !off) {
-					const float  cutZ = g_smoothFloor + height + g_lift;
+					// Never cut the player: while the smoothed height catches up after a quick
+					// floor change (basement stairs, ledges), keep the plane above the head.
+					// Extra room for the slope, which dips toward the camera in front of the body.
+					const float  headroom = Settings::HeadHeight + 30.0f + Settings::CutSlope * 20.0f;
+					const float  cutZ = std::max(g_smoothFloor + height + g_lift, feet.z + headroom);
 					const auto&  camPos = camNode->world.translate;
 
 					// Keep points with z <= cutZ + slope * (distance past the player, away from
