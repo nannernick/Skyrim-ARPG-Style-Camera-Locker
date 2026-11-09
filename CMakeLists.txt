@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.24)
 
-project(IsoCamLock VERSION 1.2.0 LANGUAGES CXX)
+project(SkyrimARPGCamera VERSION 2.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -21,10 +21,20 @@ include(extern/CommonLibSSE-NG/cmake/CommonLibSSE.cmake)
 # and generates the SKSE plugin version data (name, author, address-library flag).
 add_commonlibsse_plugin(${PROJECT_NAME}
 	AUTHOR "Nick"
-	SOURCES src/main.cpp
+	SOURCES
+		src/main.cpp
+		src/Camera.cpp
+		src/Cut.cpp
+		src/Input.cpp
+		src/Menu.cpp
+		src/Occlusion.cpp
+		src/Settings.cpp
 )
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
+target_compile_definitions(${PROJECT_NAME} PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
+
+# SKSEMenuFramework.h (SKSE Menu Framework's public header, used for the in-game menu).
+target_include_directories(${PROJECT_NAME} PRIVATE include)
 
 # CommonLib's headers expect its precompiled header to be loaded first in every source file,
 # including the version-info file the helper above generates.
@@ -35,5 +45,5 @@ set(DIST_DIR "${CMAKE_SOURCE_DIR}/dist/SKSE/Plugins")
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E make_directory "${DIST_DIR}"
 	COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:${PROJECT_NAME}>" "${DIST_DIR}"
-	COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/IsoCamLock.ini" "${DIST_DIR}"
+	COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/SkyrimARPGCamera.ini" "${DIST_DIR}"
 )

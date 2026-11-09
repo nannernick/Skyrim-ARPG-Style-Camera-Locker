@@ -1,7 +1,7 @@
 {
-  "name": "isocamlock",
+  "name": "skyrimarpgcamera",
   "version-string": "1.0.0",
-  "description": "Pins Skyrim's third-person camera to a fixed world yaw and pitch.",
+  "description": "ARPG-style camera lock and interior cutaway for Skyrim.",
   "builtin-baseline": "ee12231b20c95013c6638d845d04c91559a1d1ff",
   "dependencies": [
     "directxmath",

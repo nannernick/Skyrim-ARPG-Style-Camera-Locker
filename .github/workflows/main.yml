@@ -1,4 +1,4 @@
-name: Build IsoCamLock
+name: Build Skyrim ARPG Style Camera Mod
 
 on:
   push:
@@ -39,5 +39,5 @@ jobs:
       - name: Upload mod
         uses: actions/upload-artifact@v4
         with:
-          name: IsoCamLock-mod
+          name: SkyrimARPGCamera-mod
           path: dist/
