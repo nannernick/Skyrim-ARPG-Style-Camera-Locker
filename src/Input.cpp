@@ -77,9 +77,16 @@ namespace Input
 
 	void Reload()
 	{
+		// Keep the cut style F9 picked unless the INI's AutoLift itself was changed.
+		static bool s_fileAutoLift = Settings::AutoLift;
 		Settings::Load();
 		Camera::SetActive(Settings::CameraEnabled);
-		Occlusion::SetAutoLift(Settings::AutoLift);
+		if (Settings::AutoLift != s_fileAutoLift) {
+			s_fileAutoLift = Settings::AutoLift;
+			Occlusion::SetAutoLift(Settings::AutoLift);
+		} else {
+			Settings::AutoLift = Occlusion::GetAutoLift();  // so Save to INI keeps the current style
+		}
 		Occlusion::RestoreAll();  // re-reads cell overrides, fog and sky on the next frame
 		Camera::ApplyGameSettings();
 		Camera::ApplyPlayerValues();

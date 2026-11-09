@@ -129,7 +129,10 @@ namespace Occlusion
 				return 0.0f;
 			}
 			if (!SightBlockedBelow(a_player, a_cell, a_camPos, a_feet, a_baseCutZ + maxLift)) {
-				return maxLift;
+				// Clear all the way up. Only report "fully risen" (which switches the cut off)
+				// if nothing above that blocks either, e.g. an open cave rather than a roof.
+				const bool roofAbove = SightBlockedBelow(a_player, a_cell, a_camPos, a_feet, a_camPos.z + 1.0f);
+				return roofAbove ? maxLift - 5.0f : maxLift;  // just under the "switch off" threshold
 			}
 			float lo = 0.0f, hi = maxLift;
 			for (int i = 0; i < 6; ++i) {
@@ -667,6 +670,7 @@ namespace Occlusion
 	void ToggleStyle()
 	{
 		SetAutoLift(!g_autoLift);
+		Settings::AutoLift = g_autoLift;
 		RE::SendHUDMessage::ShowHUDMessage(g_autoLift ? "Cutaway: Auto (rises with the room)" : "Cutaway: Locked height");
 		logs::info("[cut] style toggled: {}", g_autoLift ? "auto" : "locked");
 	}
