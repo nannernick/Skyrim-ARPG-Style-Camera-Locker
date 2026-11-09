@@ -23,6 +23,10 @@ Locks the camera's pitch (and optionally yaw) every frame. Indoors, it keeps you
 - **Page Up / Page Down:** more top-down / flatter
 - Pitch 30 = Path of Exile 2 / Diablo II, 50 = Path of Exile
 
+![Path of Exile ring measured at 1920×1080](images/poe1-measurement.jpg)
+
+Pitch = arcsin(height ÷ width) of a ground circle (an AoE ring) near the center of the screen.
+
 ## Camera splitter
 Indoors, everything above a cut line is removed by the GPU. Walls end cleanly and roofs vanish, while floors, furniture and characters stay. The background goes black.
 - **F9:** *Auto* (split only when walls block the view) or *Always* (Diablo look)
