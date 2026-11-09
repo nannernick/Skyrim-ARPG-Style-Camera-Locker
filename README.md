@@ -1,6 +1,8 @@
 # Skyrim ARPG Style Camera Mod
 
-SKSE plugin that turns Skyrim's camera into an ARPG camera. It locks the camera at a fixed top-down angle, and indoors it splits away the walls and roofs between the camera and you. Tested on Skyrim **1.7.104**.
+A Path of Exile style camera for Skyrim. It locks the camera at a fixed top-down angle, and indoors it cuts away the walls and roofs between the camera and you, so you always see your character.
+
+It's built to be played with **WASD and a lock-on key** (True Directional Movement's target lock). Move freely with WASD. Press your lock-on key to snap straight ahead, or onto the nearest enemy, to aim attacks and spells. Tested on Skyrim **1.7.104**.
 
 ## Suggested modpack
 - **Base:** [SKSE](https://skse.silverlock.org/), [Address Library](https://www.nexusmods.com/skyrimspecialedition/mods/32444), [SkyUI](https://www.nexusmods.com/skyrimspecialedition/mods/12604), [MCM Helper](https://www.nexusmods.com/skyrimspecialedition/mods/53000), Pandora Behaviour Engine
