@@ -1,4 +1,4 @@
-# Skyrim ARPG Style Camera Locker + Install Guide
+# Skyrim ARPG Style Camera Mod + Install Guide
 
 SKSE plugin that pins Skyrim's third-person camera to a fixed angle for isometric/ARPG play, plus the mod list to turn Skyrim into a Path of Exile/Diablo-style ARPG.
 
