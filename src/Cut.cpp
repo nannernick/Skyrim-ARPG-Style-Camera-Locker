@@ -12,6 +12,8 @@ namespace Cut
 		std::atomic<float>         g_ay{ 0.0f };
 		std::atomic<float>         g_slope{ 0.0f };
 		std::atomic<float>         g_lastSlope{ 0.0f };
+		std::atomic<float>         g_allowedSlope{ -1.0f };  // floor-safe slope from the live camera, for the main thread
+		std::atomic<float>         g_displaySlope{ -1.0f };  // eased/held slope from the main thread; < 0 = not set
 		constexpr float            kFloorMargin = 20.0f;  // keep the plane this far above the floor on screen
 		std::atomic<float>         g_playerX{ 0.0f };
 		std::atomic<float>         g_playerY{ 0.0f };
@@ -114,6 +116,12 @@ namespace Cut
 							slope = std::clamp(maxSlope, 0.0f, slope);
 						}
 					}
+				}
+				// The floor-safe cap follows the live camera, which bobs when you jump. Report it,
+				// then never go above the eased value the main thread hands back.
+				g_allowedSlope.store(slope, std::memory_order_relaxed);
+				if (const float shown = g_displaySlope.load(std::memory_order_relaxed); shown >= 0.0f) {
+					slope = std::min(slope, shown);
 				}
 				g_lastSlope.store(slope, std::memory_order_relaxed);
 				const float nx = slope * ax;
@@ -246,6 +254,16 @@ namespace Cut
 	std::uint32_t TakeCutPassCount()
 	{
 		return g_cutPasses.exchange(0, std::memory_order_relaxed);
+	}
+
+	float AllowedSlope()
+	{
+		return g_allowedSlope.load(std::memory_order_relaxed);
+	}
+
+	void SetDisplaySlope(float a_slope)
+	{
+		g_displaySlope.store(a_slope, std::memory_order_relaxed);
 	}
 
 	float LastSlope()

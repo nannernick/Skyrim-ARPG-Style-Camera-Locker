@@ -86,7 +86,7 @@ namespace Menu
 			Checkbox("Enabled", &Settings::Enabled);
 			Checkbox("Interiors only", &Settings::InteriorOnly);
 
-			const char* const styles[] = { "Auto - cut only when the view is blocked", "Always cut (Diablo look)" };
+			const char* const styles[] = { "Auto - rises with the room", "Locked height (Diablo look)" };
 			int               style = Occlusion::GetAutoLift() ? 0 : 1;
 			if (Combo("Style", &style, styles, 2)) {
 				Occlusion::SetAutoLift(style == 0);
@@ -110,7 +110,8 @@ namespace Menu
 			SeparatorText("Auto style");
 			BeginDisabled(!Occlusion::GetAutoLift());
 			SliderFloat("Clear delay (s)", &Settings::ClearDelay, 0.0f, 5.0f, "%.2f");
-			SliderFloat("Lift distance", &Settings::LiftMax, 100.0f, 2000.0f, "%.0f");
+			SliderFloat("Max rise", &Settings::LiftMax, 100.0f, 2000.0f, "%.0f");
+			Hint("How far above Height the cut may rise in rooms with nothing in the way.");
 			EndDisabled();
 
 			SeparatorText("Background");

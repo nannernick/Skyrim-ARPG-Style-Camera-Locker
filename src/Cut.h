@@ -26,6 +26,11 @@ namespace Cut
 
 	// Slope actually used on the last frame (after the floor clamp), for logging.
 	float LastSlope();
+
+	// Floor-safe slope the render side computed from the live camera (< 0 before the first frame).
+	float AllowedSlope();
+	// Upper limit for the slope, eased on the main thread; pass < 0 to remove the limit.
+	void SetDisplaySlope(float a_slope);
 	void Deactivate();
 
 	// Number of passes drawn with the cut since the last call.

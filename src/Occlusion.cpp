@@ -60,7 +60,10 @@ namespace Occlusion
 
 		// Auto-lift: how far the cut is currently raised above its normal height.
 		float g_lift{ 0.0f };
+		float g_liftTarget{ 0.0f };
 		float g_clearTime{ 0.0f };
+		float g_liftCheckTimer{ 0.0f };
+		float g_displaySlope{ -1.0f };  // eased slope cap; held while airborne so jumps don't move the cut
 		bool  g_viewBlocked{ true };
 
 		// Eases a_value toward a_target: exponential (time constant HeightSmoothing)
@@ -75,9 +78,10 @@ namespace Occlusion
 			a_value = std::abs(a_target - a_value) <= std::abs(step) ? a_target : a_value + step;
 		}
 
-		// True if static world geometry (walls, roofs, rock) sits between the camera
-		// and the player. Uses collision, so it is unaffected by the visual cut.
-		bool SightBlocked(RE::PlayerCharacter* a_player, RE::TESObjectCELL* a_cell, const RE::NiPoint3& a_camPos, const RE::NiPoint3& a_feet)
+		// True if static geometry below height a_cutZ sits between the camera and the player.
+		// Geometry above the cut is already cut away visually, so it doesn't count: each ray
+		// starts where the camera->player sightline drops below the cut.
+		bool SightBlockedBelow(RE::PlayerCharacter* a_player, RE::TESObjectCELL* a_cell, const RE::NiPoint3& a_camPos, const RE::NiPoint3& a_feet, float a_cutZ)
 		{
 			auto* world = a_cell ? a_cell->GetbhkWorld() : nullptr;
 			if (!world) {
@@ -90,9 +94,18 @@ namespace Occlusion
 			const float targets[3] = { 40.0f, 90.0f, Settings::HeadHeight };
 			RE::BSReadLockGuard lock(world->worldLock);
 			for (const float h : targets) {
+				const RE::NiPoint3 to{ a_feet.x, a_feet.y, a_feet.z + h };
+				if (to.z >= a_cutZ) {
+					continue;  // this part of the body is above the cut: nothing can hide it
+				}
+				RE::NiPoint3 from = a_camPos;
+				if (from.z > a_cutZ) {
+					const float t = (from.z - a_cutZ) / (from.z - to.z);
+					from = { from.x + (to.x - from.x) * t, from.y + (to.y - from.y) * t, a_cutZ };
+				}
 				RE::bhkPickData pick;
-				pick.rayInput.from = { a_camPos.x * scale, a_camPos.y * scale, a_camPos.z * scale, 0.0f };
-				pick.rayInput.to = { a_feet.x * scale, a_feet.y * scale, (a_feet.z + h) * scale, 0.0f };
+				pick.rayInput.from = { from.x * scale, from.y * scale, from.z * scale, 0.0f };
+				pick.rayInput.to = { to.x * scale, to.y * scale, to.z * scale, 0.0f };
 				pick.rayInput.filterInfo = filter;
 				if (!world->PickObject(pick) || !pick.rayOutput.HasHit() || !pick.rayOutput.rootCollidable) {
 					continue;
@@ -104,6 +117,30 @@ namespace Occlusion
 				}
 			}
 			return false;
+		}
+
+		// Auto style: the highest lift (0..LiftMax above the normal cut) at which nothing
+		// below the cut blocks the player. Taller rooms get a higher cut; tight spots drop
+		// to the normal height. Higher cuts only add geometry, so a binary search works.
+		float HighestClearLift(RE::PlayerCharacter* a_player, RE::TESObjectCELL* a_cell, const RE::NiPoint3& a_camPos, const RE::NiPoint3& a_feet, float a_baseCutZ)
+		{
+			const float maxLift = Settings::LiftMax;
+			if (maxLift <= 0.0f || SightBlockedBelow(a_player, a_cell, a_camPos, a_feet, a_baseCutZ)) {
+				return 0.0f;
+			}
+			if (!SightBlockedBelow(a_player, a_cell, a_camPos, a_feet, a_baseCutZ + maxLift)) {
+				return maxLift;
+			}
+			float lo = 0.0f, hi = maxLift;
+			for (int i = 0; i < 6; ++i) {
+				const float mid = (lo + hi) * 0.5f;
+				if (SightBlockedBelow(a_player, a_cell, a_camPos, a_feet, a_baseCutZ + mid)) {
+					hi = mid;
+				} else {
+					lo = mid;
+				}
+			}
+			return lo;
 		}
 
 		float         g_perfTimer{ 0.0f };
@@ -244,7 +281,11 @@ namespace Occlusion
 			g_reanchorTimer = 0.0f;
 			g_cellOverride = nullptr;
 			g_lift = 0.0f;
+			g_liftTarget = 0.0f;
 			g_clearTime = 0.0f;
+			g_liftCheckTimer = 0.0f;
+			g_displaySlope = -1.0f;
+			Cut::SetDisplaySlope(-1.0f);
 			g_viewBlocked = true;
 			g_smoothValid = false;
 
@@ -473,19 +514,35 @@ namespace Occlusion
 					g_reanchorTimer = 0.0f;
 				}
 
-				// Auto style: lift the cut out of the way once the view has been clear for
-				// ClearDelay. Cutaway style (Diablo look): always cut.
-				float liftTarget = 0.0f;
+				// Auto style: raise the cut as high as it can go (up to LiftMax) while nothing below
+				// it blocks the player. Drops right away when something gets in the way, rises only
+				// after ClearDelay. Locked style (Diablo look): always the fixed Height.
+				const float height = g_cellOverride ? g_cellOverride->height : Settings::CutHeight;
+				float       liftTarget = 0.0f;
 				if (g_autoLift && camNode) {
-					const bool blocked = SightBlocked(player, cell, camNode->world.translate, feet);
-					if (blocked != g_viewBlocked && Settings::DebugLog) {
-						logs::info("[cut] view {}", blocked ? "blocked -> lowering cut" : "clear -> raising cut");
+					g_liftCheckTimer += a_delta;
+					if (g_liftCheckTimer >= 0.1f) {  // ~20 raycasts, ten times a second
+						g_liftCheckTimer = 0.0f;
+						const float clearLift = HighestClearLift(player, cell, camNode->world.translate, feet, g_anchorZ + height);
+						const bool  blocked = clearLift < g_liftTarget;
+						if (blocked != g_viewBlocked && Settings::DebugLog) {
+							logs::info("[cut] auto: {} (clear up to +{:.0f})", blocked ? "lowering" : "can rise", clearLift);
+						}
+						g_viewBlocked = blocked;
+						if (clearLift <= g_liftTarget) {
+							g_liftTarget = clearLift;  // lower immediately
+							g_clearTime = 0.0f;
+						} else {
+							g_clearTime += 0.1f;
+							if (g_clearTime >= Settings::ClearDelay) {
+								g_liftTarget = clearLift;
+							}
+						}
 					}
-					g_viewBlocked = blocked;
-					g_clearTime = blocked ? 0.0f : g_clearTime + a_delta;
-					if (!blocked && g_clearTime >= Settings::ClearDelay) {
-						liftTarget = Settings::LiftMax;
-					}
+					liftTarget = g_liftTarget;
+				} else {
+					g_liftTarget = 0.0f;
+					g_clearTime = 0.0f;
 				}
 
 				// Every height change (new floor, lift, drop) eases toward its target:
@@ -498,10 +555,10 @@ namespace Occlusion
 				Smooth(g_smoothFloor, g_anchorZ, a_delta);
 				Smooth(g_lift, liftTarget, a_delta);
 
-				const bool liftedAway = liftTarget > 0.0f && g_lift >= Settings::LiftMax - 1.0f;
+				// Auto with nothing in the way at all: switch the cut off once it has fully risen.
+				const bool liftedAway = g_autoLift && liftTarget >= Settings::LiftMax - 1.0f && g_lift >= Settings::LiftMax - 1.0f;
 				const bool off = (g_cellOverride && g_cellOverride->off) || liftedAway;
 				if (camNode && !off) {
-					const float  height = g_cellOverride ? g_cellOverride->height : Settings::CutHeight;
 					const float  cutZ = g_smoothFloor + height + g_lift;
 					const auto&  camPos = camNode->world.translate;
 
@@ -519,6 +576,24 @@ namespace Occlusion
 						params.slope = Settings::CutSlope;
 					}
 					Cut::Publish(params, feet, camPos);
+
+					// Ease the back of the cut instead of letting it follow the camera: hold it
+					// while airborne (jumps), drop it at once when the floor needs it, raise slowly.
+					const float allowed = Cut::AllowedSlope();
+					if (allowed >= 0.0f) {
+						if (g_displaySlope < 0.0f) {
+							g_displaySlope = allowed;
+						} else if (grounded) {
+							if (allowed < g_displaySlope) {
+								g_displaySlope = allowed;
+							} else {
+								const float tau = Settings::HeightSmoothing;
+								const float alpha = tau > 0.0f ? 1.0f - std::exp(-a_delta / tau) : 1.0f;
+								g_displaySlope += (allowed - g_displaySlope) * alpha;
+							}
+						}
+						Cut::SetDisplaySlope(g_displaySlope);
+					}
 				} else {
 					Cut::Deactivate();
 				}
@@ -592,8 +667,8 @@ namespace Occlusion
 	void ToggleStyle()
 	{
 		SetAutoLift(!g_autoLift);
-		RE::SendHUDMessage::ShowHUDMessage(g_autoLift ? "Cutaway: Auto (cuts only when blocked)" : "Cutaway: Always cut");
-		logs::info("[cut] style toggled: {}", g_autoLift ? "auto" : "always cut");
+		RE::SendHUDMessage::ShowHUDMessage(g_autoLift ? "Cutaway: Auto (rises with the room)" : "Cutaway: Locked height");
+		logs::info("[cut] style toggled: {}", g_autoLift ? "auto" : "locked");
 	}
 
 	void RestoreAll()
